@@ -1,0 +1,170 @@
+# Property of Four Js*
+# (c) Copyright Four Js 1995, 2026. All Rights Reserved.
+# * Trademark of Four Js Development Tools Europe Ltd
+#   in the United States and elsewhere
+
+#-----------------------------------------------------------------------
+# Default FGLPROFILE file
+#
+# This file contains all possible entries that can be set. These entries
+# may differ depending the graphical client that is used to display the
+# application. Keep this file as default, do not edit it. If you want to
+# customize some settings, copy this file to an other directory and set
+# the FGLPROFILE environment variable. Please refer to the documentation
+# for more details about multiple levels of fglprofile files.
+#-----------------------------------------------------------------------
+
+########################################################################
+## VIRTUAL MACHINE - GLOBAL SETTINGS
+########################################################################
+
+# Initialise environment variables on mobile devices
+#mobile.environment.DBFORMAT        = ":,:.$"
+#mobile.environment.DBDATE          = "mdy4/"
+#mobile.environment.FGLIMAGEPATH    = ".:$FGLAPPDIR:$FGLDIR/lib/image2font.txt"
+
+# Specify a directory-name where to read program specific additional configuration
+# files. A program specific configuration file has the full path
+# <directory-name>/<program-name>. 
+# If the value starts with $environment-name then the value of the environment
+# variable will be applied.
+#fglrun.defaults = "/foo/bar"
+#fglrun.defaults = "$FOO/defaults"
+
+# Perform BEFORE FIELD and AFTER FIELD triggers of intermediate fields when
+# using the mouse. Intermediate fields are fields between the old field and the
+# new field. 
+# This parameter increases the compatibility to TUI programs.
+Dialog.fieldOrder = true
+
+# Disable throwing an error (-1326) on array index out of range.
+# When disabled the first element of the array will be returned.
+# This parameter might help to migrate from Informix 4GL. 
+#fglrun.arrayIgnoreRangeError = true
+
+# Map ANY ERROR (expression errors) to ERROR.
+# When enabled fglrun does not distinguish ANY ERROR and ERROR.
+# When not enabled fglrun ignores expression errors after WHENEVER ERROR.
+#fglrun.mapAnyErrorToError = true
+
+# Treat NULL values as zero when evaluating REPORT aggregates (MIN, MAX, SUM,
+# ...).  
+# When not set an aggregate returns NULL if a NULL value has been seen.
+#Report.aggregateZero= true
+
+########################################################################
+## VIRTUAL MACHINE - USER INTERFACE SETTINGS
+########################################################################
+
+# Render as close as possible like the text user interface.
+# gui.uiMode = "traditional"
+
+# fglrun displays a message box whenever the program stops with an error.
+# The message contains the file name, the line number, the error number and the
+# error message.
+# Replace this message by your own (discouraged).
+# gui.programStoppedMessage = "my message"
+
+#-----------------------------------------------------------------------
+# Offset for SHIFT+FKEY codes. By default, when pressing shift+F1, the
+# key code 13 is sent to the program. You can change this by setting
+# this entry to a different offset.
+# Default value : 12
+#-----------------------------------------------------------------------
+# gui.key.add_function = 12
+
+#-----------------------------------------------------------------------
+# Timeout delay the runtime system waits for a front-end ping when there
+# is no user activity. After this delay the program stops with an error.
+# A value of -1 disables this feature.
+# Default value : 600 seconds
+#-----------------------------------------------------------------------
+#gui.protocol.pingTimeout=600
+
+#-----------------------------------------------------------------------
+# Timeout delay to connect to the front-end.
+# Default value : 30 seconds
+# A value of -1 means an infinite timeout delay.
+#-----------------------------------------------------------------------
+#gui.connection.timeout=30
+
+#-----------------------------------------------------------------------
+# Localized String resource files
+#-----------------------------------------------------------------------
+#fglrun.localization.warnKeyNotFound = true
+#fglrun.localization.file.count = 2
+#fglrun.localization.file.1.name = "filename1"
+#fglrun.localization.file.2.name = "filename2"
+
+#-----------------------------------------------------------------------
+# Default key labels
+# Uncomment these lines if you want to get default labels like in BDS.
+# Note that these will overwrite the texts defined in action defaults.
+#-----------------------------------------------------------------------
+
+#key.help.text      = "Help"
+#key.accept.text    = "OK"
+#key.interrupt.text = "Interrupt"
+#key.delete.text    = "Delete"
+#key.insert.text    = "Add"
+#key.append.text    = "Append"
+#key.return.text    = "Return"
+#key.escape.text    = "Escape"
+#key.prevpage.text  = "Prev Page"
+#key.nextpage.text  = "Next Page"
+#key.f1.text        = "F1"
+# ...
+#key.f42.text       = "F255"
+#key.control-a.text = "Control-a"
+# ...
+#key.control-z.text = "Control-z"
+
+########################################################################
+## VIRTUAL MACHINE - WINDOWS SPECIFIC
+########################################################################
+
+#-----------------------------------------------------------------------
+# Instructs the DVM to ignore the LOG OFF event on Windows platforms.
+# Should be set to true if the DVM is started from a remote Windows
+# environment (ex: TSE)
+# Default value : false
+#-----------------------------------------------------------------------
+#fglrun.ignoreLogoffEvent = false
+
+#-----------------------------------------------------------------------
+# Instructs the DVM to ignore the debugger event
+# On windows, pressing The CTRL-BREAK key will attach the 4GL debugger.
+# On Unix, the signal SIGTRAP will attach the 4GL debugger.
+# Should be set to true if the debugger event should be ignored.
+# Default value : false
+#-----------------------------------------------------------------------
+#fglrun.ignoreDebuggerEvent = false
+
+########################################################################
+## VIRTUAL MACHINE - DATABASE INTERFACE CONFIGURATION 
+########################################################################
+
+#-----------------------------------------------------------------------
+# Default database driver to be used when no driver is specified in
+# the dbi.database.<name>.driver entry or in connection string.
+# Default value : (none)
+#-----------------------------------------------------------------------
+#dbi.default.driver = "<drvname>"
+
+#-----------------------------------------------------------------------
+# Database connection parameters.
+# Default value : (none)
+#-----------------------------------------------------------------------
+#dbi.database.<name>.source = "<value>"
+#dbi.database.<name>.driver = "<value>"
+#dbi.database.<name>.username = "<value>"
+#dbi.database.<name>.password = "<value>"
+#dbi.database.<name>.ifxemul.<feature> = (true|false)
+
+
+dbi.database.fruits.source = "fruits@postgres:5432"
+dbi.database.fruits.driver = "dbmpgs"
+dbi.database.fruits.username = "pguser"
+dbi.database.fruits.password = "pgpass"
+dbi.database.fruits.ifxemul.rowid = false
+
