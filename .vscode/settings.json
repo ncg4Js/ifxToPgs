@@ -1,0 +1,11 @@
+{
+    "terminal.integrated.env.linux": {
+        "FGLLDPATH": "${FGLLDPATH}:${workspaceFolder}/src"
+    },
+    "terminal.integrated.env.osx": {
+        "FGLLDPATH": "${FGLLDPATH}:${workspaceFolder}/src"
+    },
+    "terminal.integrated.env.windows": {
+        "FGLLDPATH": "${FGLLDPATH}:${workspaceFolder}/src"
+    }
+}

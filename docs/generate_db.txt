@@ -1,0 +1,18 @@
+Please generate Informix SQL Script to create a small database to Register 
+fruits, 
+vendors
+Fruits by vendor.
+
+Just basic information.
+
+Each table must have a serial field called entryID.
+
+The table for fruits should have A delete trigger to implement a cascade delete in Fruits by vendor.
+Do not execute the delete directly. I need you to create a SPL function to do that.
+
+Generate ten entries for fruits, ten entries for vendors, five entries for vendors and fruits.
+
+Identify primary keys, fraudulent keys, the All Thing.
+
+
+

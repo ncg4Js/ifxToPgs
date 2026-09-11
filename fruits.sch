@@ -1,0 +1,14 @@
+fruits^entryid^262^4^1^
+fruits^fruit_name^269^50^2^
+fruits^variety^13^50^3^
+fruits^color^13^30^4^
+fruits^season^13^20^5^
+fruits_by_vendor^entryid^262^4^1^
+fruits_by_vendor^fruit_id^258^4^2^
+fruits_by_vendor^vendor_id^258^4^3^
+fruits_by_vendor^price^5^2050^4^
+vendors^entryid^262^4^1^
+vendors^vendor_name^269^50^2^
+vendors^contact_name^13^50^3^
+vendors^phone^13^20^4^
+vendors^email^13^50^5^
