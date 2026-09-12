@@ -25,10 +25,12 @@
 -- Clean up (drop in dependency order: trigger/function, child, parents)
 --------------------------------------------------------------------------
 
-CREATE DATABASE fruits;
+-- NO CAN DO!
+--CREATE DATABASE fruits;
 
 DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
 DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+DROP PROCEDURE IF EXISTS fn_update_fruit(INTEGER);
 DROP TABLE IF EXISTS fruits_by_vendor;
 DROP TABLE IF EXISTS fruits;
 DROP TABLE IF EXISTS vendors;
@@ -45,6 +47,8 @@ CREATE TABLE fruits
     variety     VARCHAR(50),
     color       VARCHAR(30),
     season      VARCHAR(20),
+    rating      SMALLINT DEFAULT 0,
+    row_version INTEGER NOT NULL DEFAULT 0,
     rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
 
     CONSTRAINT pk_fruits PRIMARY KEY (entryid),
@@ -117,6 +121,20 @@ BEGIN
 END;
 $$;
 
+CREATE OR REPLACE FUNCTION fn_update_fruit() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- for a before update this is redundant. Keeping it in the example
+    -- to illustrate its use
+    IF pg_trigger_depth() > 1 THEN
+        RETURN NULL;
+    END IF;
+    NEW.row_version := OLD.row_version + 1;
+    RETURN NEW;
+END;
+$$;
+
 --------------------------------------------------------------------------
 -- Trigger: trg_fruits_cascade_delete
 --   Fires on DELETE from fruits, for each row, and calls the SPL
@@ -128,6 +146,14 @@ CREATE TRIGGER trg_fruits_cascade_delete
     
     FOR EACH ROW
         EXECUTE FUNCTION fn_delete_fruit_cascade();
+
+CREATE TRIGGER trg_fruits_update
+    BEFORE UPDATE ON fruits
+    -- causes infinite recursivity
+    -- AFTER UPDATE ON fruits
+        
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_update_fruit();
 
 --------------------------------------------------------------------------
 -- Sample data: 10 fruits

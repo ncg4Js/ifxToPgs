@@ -1,0 +1,2851 @@
+********* QUERY **********
+CREATE DATABASE fruits;
+**************************
+
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    row_version INTEGER NOT NULL DEFAULT=0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE vendors
+(
+    entryid       SERIAL       NOT NULL,
+    vendor_name   VARCHAR(50)  NOT NULL,
+    contact_name  VARCHAR(50),
+    phone         VARCHAR(20),
+    email         VARCHAR(50),
+    rowid         BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_vendors PRIMARY KEY (entryid),
+    CONSTRAINT uq_vendors_name UNIQUE (vendor_name)  
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE fruits_by_vendor
+(
+    entryid    SERIAL         NOT NULL,
+    fruit_id   INTEGER        NOT NULL,
+    vendor_id  INTEGER        NOT NULL,
+    price      DECIMAL(8,2),
+    rowid      BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits_by_vendor PRIMARY KEY (entryid),
+    CONSTRAINT fk_fbv_fruit
+        FOREIGN KEY (fruit_id) REFERENCES fruits(entryid),
+    CONSTRAINT fk_fbv_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendors(entryid),
+    CONSTRAINT uq_fbv_fruit_vendor UNIQUE (fruit_id, vendor_id) 
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_delete_fruit_cascade() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM fruits_by_vendor
+        WHERE fruit_id = OLD.entryid;
+    RETURN OLD;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_delete
+    AFTER DELETE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_delete_fruit_cascade();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_update
+    AFTER UPDATE ON fruits
+    
+    FOR EACH ROW
+        UPDATE fruits SET row_version = row_version + 1
+        WHERE fruitid = OLD.fruitId
+--------------------------------------------------------------------------
+-- Sample data: 10 fruits
+--------------------------------------------------------------------------
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Apple',      'Gala',        'Red',    'Autumn');
+**************************
+
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE vendors
+(
+    entryid       SERIAL       NOT NULL,
+    vendor_name   VARCHAR(50)  NOT NULL,
+    contact_name  VARCHAR(50),
+    phone         VARCHAR(20),
+    email         VARCHAR(50),
+    rowid         BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_vendors PRIMARY KEY (entryid),
+    CONSTRAINT uq_vendors_name UNIQUE (vendor_name)  
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE fruits_by_vendor
+(
+    entryid    SERIAL         NOT NULL,
+    fruit_id   INTEGER        NOT NULL,
+    vendor_id  INTEGER        NOT NULL,
+    price      DECIMAL(8,2),
+    rowid      BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits_by_vendor PRIMARY KEY (entryid),
+    CONSTRAINT fk_fbv_fruit
+        FOREIGN KEY (fruit_id) REFERENCES fruits(entryid),
+    CONSTRAINT fk_fbv_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendors(entryid),
+    CONSTRAINT uq_fbv_fruit_vendor UNIQUE (fruit_id, vendor_id) 
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_delete_fruit_cascade() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM fruits_by_vendor
+        WHERE fruit_id = OLD.entryid;
+    RETURN OLD;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_delete
+    AFTER DELETE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_delete_fruit_cascade();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_update
+    AFTER UPDATE ON fruits
+    
+    FOR EACH ROW
+        UPDATE fruits SET row_version = row_version + 1
+            WHERE entryid = OLD.entryId
+--------------------------------------------------------------------------
+-- Sample data: 10 fruits
+--------------------------------------------------------------------------
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Apple',      'Gala',        'Red',    'Autumn');
+**************************
+
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE vendors
+(
+    entryid       SERIAL       NOT NULL,
+    vendor_name   VARCHAR(50)  NOT NULL,
+    contact_name  VARCHAR(50),
+    phone         VARCHAR(20),
+    email         VARCHAR(50),
+    rowid         BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_vendors PRIMARY KEY (entryid),
+    CONSTRAINT uq_vendors_name UNIQUE (vendor_name)  
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE fruits_by_vendor
+(
+    entryid    SERIAL         NOT NULL,
+    fruit_id   INTEGER        NOT NULL,
+    vendor_id  INTEGER        NOT NULL,
+    price      DECIMAL(8,2),
+    rowid      BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits_by_vendor PRIMARY KEY (entryid),
+    CONSTRAINT fk_fbv_fruit
+        FOREIGN KEY (fruit_id) REFERENCES fruits(entryid),
+    CONSTRAINT fk_fbv_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendors(entryid),
+    CONSTRAINT uq_fbv_fruit_vendor UNIQUE (fruit_id, vendor_id) 
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_delete_fruit_cascade() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM fruits_by_vendor
+        WHERE fruit_id = OLD.entryid;
+    RETURN OLD;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_update_fruit() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE fruits SET row_version = row_version + 1
+        WHERE entryid = OLD.entryId
+    RETURN NEW.row_version;
+END;
+$$;
+**************************
+
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE vendors
+(
+    entryid       SERIAL       NOT NULL,
+    vendor_name   VARCHAR(50)  NOT NULL,
+    contact_name  VARCHAR(50),
+    phone         VARCHAR(20),
+    email         VARCHAR(50),
+    rowid         BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_vendors PRIMARY KEY (entryid),
+    CONSTRAINT uq_vendors_name UNIQUE (vendor_name)  
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE fruits_by_vendor
+(
+    entryid    SERIAL         NOT NULL,
+    fruit_id   INTEGER        NOT NULL,
+    vendor_id  INTEGER        NOT NULL,
+    price      DECIMAL(8,2),
+    rowid      BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits_by_vendor PRIMARY KEY (entryid),
+    CONSTRAINT fk_fbv_fruit
+        FOREIGN KEY (fruit_id) REFERENCES fruits(entryid),
+    CONSTRAINT fk_fbv_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendors(entryid),
+    CONSTRAINT uq_fbv_fruit_vendor UNIQUE (fruit_id, vendor_id) 
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_delete_fruit_cascade() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM fruits_by_vendor
+        WHERE fruit_id = OLD.entryid;
+    RETURN OLD;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_update_fruit() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE fruits SET row_version = row_version + 1
+        WHERE entryid = OLD.entryId;
+    RETURN NEW.row_version;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_delete
+    AFTER DELETE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_delete_fruit_cascade();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_update
+    AFTER UPDATE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_update_fruit();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Apple',      'Gala',        'Red',    'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Banana',     'Cavendish',   'Yellow', 'Year-round');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Orange',     'Navel',       'Orange', 'Winter');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Grape',      'Thompson',    'Green',  'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Strawberry', 'Albion',      'Red',    'Spring');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pineapple',  'Smooth Cayenne','Brown','Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Mango',      'Tommy Atkins','Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Watermelon', 'Crimson Sweet','Green', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pear',       'Bartlett',    'Green',  'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Peach',      'Elberta',     'Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Green Valley Farms',   'Alice Johnson', '555-0101', 'alice@greenvalley.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Sunrise Produce',       'Bob Smith',     '555-0102', 'bob@sunriseproduce.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Tropical Imports Co.',  'Carla Diaz',    '555-0103', 'carla@tropicalimports.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Orchard Fresh',         'David Lee',     '555-0104', 'david@orchardfresh.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Berry Best Suppliers',  'Emma Wilson',   '555-0105', 'emma@berrybest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Market Street Growers', 'Frank Moore',   '555-0106', 'frank@marketstreet.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Coastal Fruit Traders', 'Grace Kim',     '555-0107', 'grace@coastalfruit.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Highland Harvest',      'Henry Brown',   '555-0108', 'henry@highlandharvest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Valley View Vendors',   'Irene Clark',   '555-0109', 'irene@valleyview.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Riverside Organics',    'Jack Turner',   '555-0110', 'jack@riverside.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (1, 1, 1.25);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (2, 2, 0.55);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (7, 3, 2.10);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (9, 4, 1.75);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (5, 5, 3.00);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_update_fruit(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE vendors
+(
+    entryid       SERIAL       NOT NULL,
+    vendor_name   VARCHAR(50)  NOT NULL,
+    contact_name  VARCHAR(50),
+    phone         VARCHAR(20),
+    email         VARCHAR(50),
+    rowid         BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_vendors PRIMARY KEY (entryid),
+    CONSTRAINT uq_vendors_name UNIQUE (vendor_name)  
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE fruits_by_vendor
+(
+    entryid    SERIAL         NOT NULL,
+    fruit_id   INTEGER        NOT NULL,
+    vendor_id  INTEGER        NOT NULL,
+    price      DECIMAL(8,2),
+    rowid      BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits_by_vendor PRIMARY KEY (entryid),
+    CONSTRAINT fk_fbv_fruit
+        FOREIGN KEY (fruit_id) REFERENCES fruits(entryid),
+    CONSTRAINT fk_fbv_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendors(entryid),
+    CONSTRAINT uq_fbv_fruit_vendor UNIQUE (fruit_id, vendor_id) 
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_delete_fruit_cascade() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM fruits_by_vendor
+        WHERE fruit_id = OLD.entryid;
+    RETURN OLD;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_update_fruit() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE fruits SET row_version = row_version + 1
+        WHERE entryid = OLD.entryId;
+    RETURN NEW.row_version;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_delete
+    AFTER DELETE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_delete_fruit_cascade();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_update
+    AFTER UPDATE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_update_fruit();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Apple',      'Gala',        'Red',    'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Banana',     'Cavendish',   'Yellow', 'Year-round');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Orange',     'Navel',       'Orange', 'Winter');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Grape',      'Thompson',    'Green',  'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Strawberry', 'Albion',      'Red',    'Spring');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pineapple',  'Smooth Cayenne','Brown','Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Mango',      'Tommy Atkins','Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Watermelon', 'Crimson Sweet','Green', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pear',       'Bartlett',    'Green',  'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Peach',      'Elberta',     'Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Green Valley Farms',   'Alice Johnson', '555-0101', 'alice@greenvalley.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Sunrise Produce',       'Bob Smith',     '555-0102', 'bob@sunriseproduce.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Tropical Imports Co.',  'Carla Diaz',    '555-0103', 'carla@tropicalimports.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Orchard Fresh',         'David Lee',     '555-0104', 'david@orchardfresh.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Berry Best Suppliers',  'Emma Wilson',   '555-0105', 'emma@berrybest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Market Street Growers', 'Frank Moore',   '555-0106', 'frank@marketstreet.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Coastal Fruit Traders', 'Grace Kim',     '555-0107', 'grace@coastalfruit.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Highland Harvest',      'Henry Brown',   '555-0108', 'henry@highlandharvest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Valley View Vendors',   'Irene Clark',   '555-0109', 'irene@valleyview.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Riverside Organics',    'Jack Turner',   '555-0110', 'jack@riverside.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (1, 1, 1.25);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (2, 2, 0.55);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (7, 3, 2.10);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (9, 4, 1.75);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (5, 5, 3.00);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_update_fruit(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    rating      SMALLINT;
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_update_fruit(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    rating      SMALLINT,
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE vendors
+(
+    entryid       SERIAL       NOT NULL,
+    vendor_name   VARCHAR(50)  NOT NULL,
+    contact_name  VARCHAR(50),
+    phone         VARCHAR(20),
+    email         VARCHAR(50),
+    rowid         BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_vendors PRIMARY KEY (entryid),
+    CONSTRAINT uq_vendors_name UNIQUE (vendor_name)  
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE fruits_by_vendor
+(
+    entryid    SERIAL         NOT NULL,
+    fruit_id   INTEGER        NOT NULL,
+    vendor_id  INTEGER        NOT NULL,
+    price      DECIMAL(8,2),
+    rowid      BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits_by_vendor PRIMARY KEY (entryid),
+    CONSTRAINT fk_fbv_fruit
+        FOREIGN KEY (fruit_id) REFERENCES fruits(entryid),
+    CONSTRAINT fk_fbv_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendors(entryid),
+    CONSTRAINT uq_fbv_fruit_vendor UNIQUE (fruit_id, vendor_id) 
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_delete_fruit_cascade() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM fruits_by_vendor
+        WHERE fruit_id = OLD.entryid;
+    RETURN OLD;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_update_fruit() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE fruits SET row_version = row_version + 1
+        WHERE entryid = OLD.entryId;
+    RETURN NEW.row_version;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_delete
+    AFTER DELETE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_delete_fruit_cascade();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_update
+    AFTER UPDATE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_update_fruit();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Apple',      'Gala',        'Red',    'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Banana',     'Cavendish',   'Yellow', 'Year-round');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Orange',     'Navel',       'Orange', 'Winter');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Grape',      'Thompson',    'Green',  'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Strawberry', 'Albion',      'Red',    'Spring');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pineapple',  'Smooth Cayenne','Brown','Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Mango',      'Tommy Atkins','Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Watermelon', 'Crimson Sweet','Green', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pear',       'Bartlett',    'Green',  'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Peach',      'Elberta',     'Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Green Valley Farms',   'Alice Johnson', '555-0101', 'alice@greenvalley.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Sunrise Produce',       'Bob Smith',     '555-0102', 'bob@sunriseproduce.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Tropical Imports Co.',  'Carla Diaz',    '555-0103', 'carla@tropicalimports.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Orchard Fresh',         'David Lee',     '555-0104', 'david@orchardfresh.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Berry Best Suppliers',  'Emma Wilson',   '555-0105', 'emma@berrybest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Market Street Growers', 'Frank Moore',   '555-0106', 'frank@marketstreet.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Coastal Fruit Traders', 'Grace Kim',     '555-0107', 'grace@coastalfruit.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Highland Harvest',      'Henry Brown',   '555-0108', 'henry@highlandharvest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Valley View Vendors',   'Irene Clark',   '555-0109', 'irene@valleyview.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Riverside Organics',    'Jack Turner',   '555-0110', 'jack@riverside.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (1, 1, 1.25);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (2, 2, 0.55);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (7, 3, 2.10);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (9, 4, 1.75);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (5, 5, 3.00);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_update_fruit(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    rating      SMALLINT DEFAUL 0,
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_update_fruit(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    rating      SMALLINT DEFAULT 0,
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE vendors
+(
+    entryid       SERIAL       NOT NULL,
+    vendor_name   VARCHAR(50)  NOT NULL,
+    contact_name  VARCHAR(50),
+    phone         VARCHAR(20),
+    email         VARCHAR(50),
+    rowid         BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_vendors PRIMARY KEY (entryid),
+    CONSTRAINT uq_vendors_name UNIQUE (vendor_name)  
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE fruits_by_vendor
+(
+    entryid    SERIAL         NOT NULL,
+    fruit_id   INTEGER        NOT NULL,
+    vendor_id  INTEGER        NOT NULL,
+    price      DECIMAL(8,2),
+    rowid      BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits_by_vendor PRIMARY KEY (entryid),
+    CONSTRAINT fk_fbv_fruit
+        FOREIGN KEY (fruit_id) REFERENCES fruits(entryid),
+    CONSTRAINT fk_fbv_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendors(entryid),
+    CONSTRAINT uq_fbv_fruit_vendor UNIQUE (fruit_id, vendor_id) 
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_delete_fruit_cascade() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM fruits_by_vendor
+        WHERE fruit_id = OLD.entryid;
+    RETURN OLD;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_update_fruit() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE fruits SET row_version = row_version + 1
+        WHERE entryid = OLD.entryId;
+    RETURN NEW.row_version;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_delete
+    AFTER DELETE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_delete_fruit_cascade();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_update
+    AFTER UPDATE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_update_fruit();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Apple',      'Gala',        'Red',    'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Banana',     'Cavendish',   'Yellow', 'Year-round');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Orange',     'Navel',       'Orange', 'Winter');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Grape',      'Thompson',    'Green',  'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Strawberry', 'Albion',      'Red',    'Spring');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pineapple',  'Smooth Cayenne','Brown','Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Mango',      'Tommy Atkins','Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Watermelon', 'Crimson Sweet','Green', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pear',       'Bartlett',    'Green',  'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Peach',      'Elberta',     'Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Green Valley Farms',   'Alice Johnson', '555-0101', 'alice@greenvalley.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Sunrise Produce',       'Bob Smith',     '555-0102', 'bob@sunriseproduce.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Tropical Imports Co.',  'Carla Diaz',    '555-0103', 'carla@tropicalimports.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Orchard Fresh',         'David Lee',     '555-0104', 'david@orchardfresh.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Berry Best Suppliers',  'Emma Wilson',   '555-0105', 'emma@berrybest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Market Street Growers', 'Frank Moore',   '555-0106', 'frank@marketstreet.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Coastal Fruit Traders', 'Grace Kim',     '555-0107', 'grace@coastalfruit.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Highland Harvest',      'Henry Brown',   '555-0108', 'henry@highlandharvest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Valley View Vendors',   'Irene Clark',   '555-0109', 'irene@valleyview.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Riverside Organics',    'Jack Turner',   '555-0110', 'jack@riverside.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (1, 1, 1.25);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (2, 2, 0.55);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (7, 3, 2.10);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (9, 4, 1.75);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (5, 5, 3.00);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_update_fruit(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    rating      SMALLINT DEFAULT 0,
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE vendors
+(
+    entryid       SERIAL       NOT NULL,
+    vendor_name   VARCHAR(50)  NOT NULL,
+    contact_name  VARCHAR(50),
+    phone         VARCHAR(20),
+    email         VARCHAR(50),
+    rowid         BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_vendors PRIMARY KEY (entryid),
+    CONSTRAINT uq_vendors_name UNIQUE (vendor_name)  
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE fruits_by_vendor
+(
+    entryid    SERIAL         NOT NULL,
+    fruit_id   INTEGER        NOT NULL,
+    vendor_id  INTEGER        NOT NULL,
+    price      DECIMAL(8,2),
+    rowid      BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits_by_vendor PRIMARY KEY (entryid),
+    CONSTRAINT fk_fbv_fruit
+        FOREIGN KEY (fruit_id) REFERENCES fruits(entryid),
+    CONSTRAINT fk_fbv_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendors(entryid),
+    CONSTRAINT uq_fbv_fruit_vendor UNIQUE (fruit_id, vendor_id) 
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_delete_fruit_cascade() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM fruits_by_vendor
+        WHERE fruit_id = OLD.entryid;
+    RETURN OLD;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_update_fruit() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE fruits SET row_version = row_version + 1
+        WHERE entryid = OLD.entryId;
+    RETURN NEW.row_version;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_delete
+    AFTER DELETE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_delete_fruit_cascade();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+CREATE TRIGGER trg_fruits_update
+    BEFORE UPDATE ON fruits
+    -- causes infinite recursivity
+    -- AFTER UPDATE ON fruits
+    
+    -- for a before update this is redundant. Keeping it in the example
+    -- to llustrate its use
+    IF pg_trigger_depth() = 0 THEN
+        -- update
+        FOR EACH ROW
+            EXECUTE FUNCTION fn_update_fruit();
+**************************
+
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_update_fruit(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    rating      SMALLINT DEFAULT 0,
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE vendors
+(
+    entryid       SERIAL       NOT NULL,
+    vendor_name   VARCHAR(50)  NOT NULL,
+    contact_name  VARCHAR(50),
+    phone         VARCHAR(20),
+    email         VARCHAR(50),
+    rowid         BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_vendors PRIMARY KEY (entryid),
+    CONSTRAINT uq_vendors_name UNIQUE (vendor_name)  
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE fruits_by_vendor
+(
+    entryid    SERIAL         NOT NULL,
+    fruit_id   INTEGER        NOT NULL,
+    vendor_id  INTEGER        NOT NULL,
+    price      DECIMAL(8,2),
+    rowid      BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits_by_vendor PRIMARY KEY (entryid),
+    CONSTRAINT fk_fbv_fruit
+        FOREIGN KEY (fruit_id) REFERENCES fruits(entryid),
+    CONSTRAINT fk_fbv_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendors(entryid),
+    CONSTRAINT uq_fbv_fruit_vendor UNIQUE (fruit_id, vendor_id) 
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_delete_fruit_cascade() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM fruits_by_vendor
+        WHERE fruit_id = OLD.entryid;
+    RETURN OLD;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_update_fruit() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- for a before update this is redundant. Keeping it in the example
+    -- to illustrate its use
+    IF pg_trigger_depth() = 0 THEN
+        UPDATE fruits SET row_version = row_version + 1
+            WHERE entryid = OLD.entryId;
+        RETURN NEW.row_version;
+    ELSE
+        RETURN OLD.row_version;
+    END IF;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_delete
+    AFTER DELETE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_delete_fruit_cascade();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+CREATE TRIGGER trg_fruits_update
+    BEFORE UPDATE ON fruits
+    -- causes infinite recursivity
+    -- AFTER UPDATE ON fruits
+        
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_update_fruit();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Apple',      'Gala',        'Red',    'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Banana',     'Cavendish',   'Yellow', 'Year-round');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Orange',     'Navel',       'Orange', 'Winter');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Grape',      'Thompson',    'Green',  'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Strawberry', 'Albion',      'Red',    'Spring');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pineapple',  'Smooth Cayenne','Brown','Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Mango',      'Tommy Atkins','Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Watermelon', 'Crimson Sweet','Green', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pear',       'Bartlett',    'Green',  'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Peach',      'Elberta',     'Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Green Valley Farms',   'Alice Johnson', '555-0101', 'alice@greenvalley.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Sunrise Produce',       'Bob Smith',     '555-0102', 'bob@sunriseproduce.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Tropical Imports Co.',  'Carla Diaz',    '555-0103', 'carla@tropicalimports.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Orchard Fresh',         'David Lee',     '555-0104', 'david@orchardfresh.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Berry Best Suppliers',  'Emma Wilson',   '555-0105', 'emma@berrybest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Market Street Growers', 'Frank Moore',   '555-0106', 'frank@marketstreet.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Coastal Fruit Traders', 'Grace Kim',     '555-0107', 'grace@coastalfruit.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Highland Harvest',      'Henry Brown',   '555-0108', 'henry@highlandharvest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Valley View Vendors',   'Irene Clark',   '555-0109', 'irene@valleyview.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Riverside Organics',    'Jack Turner',   '555-0110', 'jack@riverside.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (1, 1, 1.25);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (2, 2, 0.55);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (7, 3, 2.10);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (9, 4, 1.75);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (5, 5, 3.00);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_update_fruit(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    rating      SMALLINT DEFAULT 0,
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE vendors
+(
+    entryid       SERIAL       NOT NULL,
+    vendor_name   VARCHAR(50)  NOT NULL,
+    contact_name  VARCHAR(50),
+    phone         VARCHAR(20),
+    email         VARCHAR(50),
+    rowid         BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_vendors PRIMARY KEY (entryid),
+    CONSTRAINT uq_vendors_name UNIQUE (vendor_name)  
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE fruits_by_vendor
+(
+    entryid    SERIAL         NOT NULL,
+    fruit_id   INTEGER        NOT NULL,
+    vendor_id  INTEGER        NOT NULL,
+    price      DECIMAL(8,2),
+    rowid      BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits_by_vendor PRIMARY KEY (entryid),
+    CONSTRAINT fk_fbv_fruit
+        FOREIGN KEY (fruit_id) REFERENCES fruits(entryid),
+    CONSTRAINT fk_fbv_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendors(entryid),
+    CONSTRAINT uq_fbv_fruit_vendor UNIQUE (fruit_id, vendor_id) 
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_delete_fruit_cascade() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM fruits_by_vendor
+        WHERE fruit_id = OLD.entryid;
+    RETURN OLD;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_update_fruit() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- for a before update this is redundant. Keeping it in the example
+    -- to illustrate its use
+    IF pg_trigger_depth() = 0 THEN
+        UPDATE fruits SET row_version = row_version + 1
+            WHERE entryid = OLD.entryId;
+        RETURN NEW;
+    ELSE
+        RETURN OLD;
+    END IF;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_delete
+    AFTER DELETE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_delete_fruit_cascade();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+CREATE TRIGGER trg_fruits_update
+    BEFORE UPDATE ON fruits
+    -- causes infinite recursivity
+    -- AFTER UPDATE ON fruits
+        
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_update_fruit();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Apple',      'Gala',        'Red',    'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Banana',     'Cavendish',   'Yellow', 'Year-round');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Orange',     'Navel',       'Orange', 'Winter');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Grape',      'Thompson',    'Green',  'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Strawberry', 'Albion',      'Red',    'Spring');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pineapple',  'Smooth Cayenne','Brown','Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Mango',      'Tommy Atkins','Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Watermelon', 'Crimson Sweet','Green', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pear',       'Bartlett',    'Green',  'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Peach',      'Elberta',     'Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Green Valley Farms',   'Alice Johnson', '555-0101', 'alice@greenvalley.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Sunrise Produce',       'Bob Smith',     '555-0102', 'bob@sunriseproduce.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Tropical Imports Co.',  'Carla Diaz',    '555-0103', 'carla@tropicalimports.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Orchard Fresh',         'David Lee',     '555-0104', 'david@orchardfresh.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Berry Best Suppliers',  'Emma Wilson',   '555-0105', 'emma@berrybest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Market Street Growers', 'Frank Moore',   '555-0106', 'frank@marketstreet.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Coastal Fruit Traders', 'Grace Kim',     '555-0107', 'grace@coastalfruit.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Highland Harvest',      'Henry Brown',   '555-0108', 'henry@highlandharvest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Valley View Vendors',   'Irene Clark',   '555-0109', 'irene@valleyview.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Riverside Organics',    'Jack Turner',   '555-0110', 'jack@riverside.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (1, 1, 1.25);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (2, 2, 0.55);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (7, 3, 2.10);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (9, 4, 1.75);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (5, 5, 3.00);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_update_fruit(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    rating      SMALLINT DEFAULT 0,
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE vendors
+(
+    entryid       SERIAL       NOT NULL,
+    vendor_name   VARCHAR(50)  NOT NULL,
+    contact_name  VARCHAR(50),
+    phone         VARCHAR(20),
+    email         VARCHAR(50),
+    rowid         BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_vendors PRIMARY KEY (entryid),
+    CONSTRAINT uq_vendors_name UNIQUE (vendor_name)  
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE fruits_by_vendor
+(
+    entryid    SERIAL         NOT NULL,
+    fruit_id   INTEGER        NOT NULL,
+    vendor_id  INTEGER        NOT NULL,
+    price      DECIMAL(8,2),
+    rowid      BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits_by_vendor PRIMARY KEY (entryid),
+    CONSTRAINT fk_fbv_fruit
+        FOREIGN KEY (fruit_id) REFERENCES fruits(entryid),
+    CONSTRAINT fk_fbv_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendors(entryid),
+    CONSTRAINT uq_fbv_fruit_vendor UNIQUE (fruit_id, vendor_id) 
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_delete_fruit_cascade() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM fruits_by_vendor
+        WHERE fruit_id = OLD.entryid;
+    RETURN OLD;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_update_fruit() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- for a before update this is redundant. Keeping it in the example
+    -- to illustrate its use
+    IF pg_trigger_depth() = 0 THEN
+        UPDATE fruits SET row_version = row_version + 1
+            WHERE entryid = OLD.entryId;
+        RETURN NEW;
+    ELSE
+        RETURN OLD;
+    END IF;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_delete
+    AFTER DELETE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_delete_fruit_cascade();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+CREATE TRIGGER trg_fruits_update
+    BEFORE UPDATE ON fruits
+    -- causes infinite recursivity
+    -- AFTER UPDATE ON fruits
+        
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_update_fruit();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Apple',      'Gala',        'Red',    'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Banana',     'Cavendish',   'Yellow', 'Year-round');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Orange',     'Navel',       'Orange', 'Winter');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Grape',      'Thompson',    'Green',  'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Strawberry', 'Albion',      'Red',    'Spring');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pineapple',  'Smooth Cayenne','Brown','Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Mango',      'Tommy Atkins','Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Watermelon', 'Crimson Sweet','Green', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pear',       'Bartlett',    'Green',  'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Peach',      'Elberta',     'Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Green Valley Farms',   'Alice Johnson', '555-0101', 'alice@greenvalley.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Sunrise Produce',       'Bob Smith',     '555-0102', 'bob@sunriseproduce.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Tropical Imports Co.',  'Carla Diaz',    '555-0103', 'carla@tropicalimports.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Orchard Fresh',         'David Lee',     '555-0104', 'david@orchardfresh.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Berry Best Suppliers',  'Emma Wilson',   '555-0105', 'emma@berrybest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Market Street Growers', 'Frank Moore',   '555-0106', 'frank@marketstreet.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Coastal Fruit Traders', 'Grace Kim',     '555-0107', 'grace@coastalfruit.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Highland Harvest',      'Henry Brown',   '555-0108', 'henry@highlandharvest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Valley View Vendors',   'Irene Clark',   '555-0109', 'irene@valleyview.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Riverside Organics',    'Jack Turner',   '555-0110', 'jack@riverside.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (1, 1, 1.25);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (2, 2, 0.55);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (7, 3, 2.10);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (9, 4, 1.75);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (5, 5, 3.00);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_update_fruit(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    rating      SMALLINT DEFAULT 0,
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE vendors
+(
+    entryid       SERIAL       NOT NULL,
+    vendor_name   VARCHAR(50)  NOT NULL,
+    contact_name  VARCHAR(50),
+    phone         VARCHAR(20),
+    email         VARCHAR(50),
+    rowid         BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_vendors PRIMARY KEY (entryid),
+    CONSTRAINT uq_vendors_name UNIQUE (vendor_name)  
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE fruits_by_vendor
+(
+    entryid    SERIAL         NOT NULL,
+    fruit_id   INTEGER        NOT NULL,
+    vendor_id  INTEGER        NOT NULL,
+    price      DECIMAL(8,2),
+    rowid      BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits_by_vendor PRIMARY KEY (entryid),
+    CONSTRAINT fk_fbv_fruit
+        FOREIGN KEY (fruit_id) REFERENCES fruits(entryid),
+    CONSTRAINT fk_fbv_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendors(entryid),
+    CONSTRAINT uq_fbv_fruit_vendor UNIQUE (fruit_id, vendor_id) 
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_delete_fruit_cascade() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM fruits_by_vendor
+        WHERE fruit_id = OLD.entryid;
+    RETURN OLD;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_update_fruit() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- for a before update this is redundant. Keeping it in the example
+    -- to illustrate its use
+    IF pg_trigger_depth() > 1 THEN
+        RETURN NULL;
+    END IF;
+    NEW.row_version := OLD.row_version + 1;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_delete
+    AFTER DELETE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_delete_fruit_cascade();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+CREATE TRIGGER trg_fruits_update
+    BEFORE UPDATE ON fruits
+    -- causes infinite recursivity
+    -- AFTER UPDATE ON fruits
+        
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_update_fruit();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Apple',      'Gala',        'Red',    'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Banana',     'Cavendish',   'Yellow', 'Year-round');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Orange',     'Navel',       'Orange', 'Winter');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Grape',      'Thompson',    'Green',  'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Strawberry', 'Albion',      'Red',    'Spring');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pineapple',  'Smooth Cayenne','Brown','Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Mango',      'Tommy Atkins','Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Watermelon', 'Crimson Sweet','Green', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pear',       'Bartlett',    'Green',  'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Peach',      'Elberta',     'Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Green Valley Farms',   'Alice Johnson', '555-0101', 'alice@greenvalley.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Sunrise Produce',       'Bob Smith',     '555-0102', 'bob@sunriseproduce.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Tropical Imports Co.',  'Carla Diaz',    '555-0103', 'carla@tropicalimports.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Orchard Fresh',         'David Lee',     '555-0104', 'david@orchardfresh.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Berry Best Suppliers',  'Emma Wilson',   '555-0105', 'emma@berrybest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Market Street Growers', 'Frank Moore',   '555-0106', 'frank@marketstreet.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Coastal Fruit Traders', 'Grace Kim',     '555-0107', 'grace@coastalfruit.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Highland Harvest',      'Henry Brown',   '555-0108', 'henry@highlandharvest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Valley View Vendors',   'Irene Clark',   '555-0109', 'irene@valleyview.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Riverside Organics',    'Jack Turner',   '555-0110', 'jack@riverside.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (1, 1, 1.25);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (2, 2, 0.55);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (7, 3, 2.10);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (9, 4, 1.75);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (5, 5, 3.00);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+DROP TRIGGER IF EXISTS trg_fruits_cascade_delete ON fruits;
+**************************
+
+DROP TRIGGER
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_delete_fruit_cascade(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP PROCEDURE IF EXISTS fn_update_fruit(INTEGER);
+**************************
+
+DROP PROCEDURE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits_by_vendor;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS fruits;
+**************************
+
+DROP TABLE
+********* QUERY **********
+DROP TABLE IF EXISTS vendors;
+**************************
+
+DROP TABLE
+********* QUERY **********
+CREATE TABLE fruits
+(
+    entryid     SERIAL       NOT NULL,
+    fruit_name  VARCHAR(50)  NOT NULL,
+    variety     VARCHAR(50),
+    color       VARCHAR(30),
+    season      VARCHAR(20),
+    rating      SMALLINT DEFAULT 0,
+    row_version INTEGER NOT NULL DEFAULT 0,
+    rowid       BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits PRIMARY KEY (entryid),
+    CONSTRAINT uq_fruits_name UNIQUE (fruit_name)   
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE vendors
+(
+    entryid       SERIAL       NOT NULL,
+    vendor_name   VARCHAR(50)  NOT NULL,
+    contact_name  VARCHAR(50),
+    phone         VARCHAR(20),
+    email         VARCHAR(50),
+    rowid         BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_vendors PRIMARY KEY (entryid),
+    CONSTRAINT uq_vendors_name UNIQUE (vendor_name)  
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE TABLE fruits_by_vendor
+(
+    entryid    SERIAL         NOT NULL,
+    fruit_id   INTEGER        NOT NULL,
+    vendor_id  INTEGER        NOT NULL,
+    price      DECIMAL(8,2),
+    rowid      BIGINT GENERATED ALWAYS AS IDENTITY,
+    CONSTRAINT pk_fruits_by_vendor PRIMARY KEY (entryid),
+    CONSTRAINT fk_fbv_fruit
+        FOREIGN KEY (fruit_id) REFERENCES fruits(entryid),
+    CONSTRAINT fk_fbv_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendors(entryid),
+    CONSTRAINT uq_fbv_fruit_vendor UNIQUE (fruit_id, vendor_id) 
+);
+**************************
+
+CREATE TABLE
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_delete_fruit_cascade() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    DELETE FROM fruits_by_vendor
+        WHERE fruit_id = OLD.entryid;
+    RETURN OLD;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE OR REPLACE FUNCTION fn_update_fruit() RETURNS trigger
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- for a before update this is redundant. Keeping it in the example
+    -- to illustrate its use
+    IF pg_trigger_depth() > 1 THEN
+        RETURN NULL;
+    END IF;
+    NEW.row_version := OLD.row_version + 1;
+    RETURN NEW;
+END;
+$$;
+**************************
+
+CREATE FUNCTION
+********* QUERY **********
+CREATE TRIGGER trg_fruits_cascade_delete
+    AFTER DELETE ON fruits
+    
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_delete_fruit_cascade();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+CREATE TRIGGER trg_fruits_update
+    BEFORE UPDATE ON fruits
+    -- causes infinite recursivity
+    -- AFTER UPDATE ON fruits
+        
+    FOR EACH ROW
+        EXECUTE FUNCTION fn_update_fruit();
+**************************
+
+CREATE TRIGGER
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Apple',      'Gala',        'Red',    'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Banana',     'Cavendish',   'Yellow', 'Year-round');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Orange',     'Navel',       'Orange', 'Winter');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Grape',      'Thompson',    'Green',  'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Strawberry', 'Albion',      'Red',    'Spring');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pineapple',  'Smooth Cayenne','Brown','Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Mango',      'Tommy Atkins','Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Watermelon', 'Crimson Sweet','Green', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Pear',       'Bartlett',    'Green',  'Autumn');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits (fruit_name, variety, color, season) VALUES ('Peach',      'Elberta',     'Orange', 'Summer');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Green Valley Farms',   'Alice Johnson', '555-0101', 'alice@greenvalley.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Sunrise Produce',       'Bob Smith',     '555-0102', 'bob@sunriseproduce.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Tropical Imports Co.',  'Carla Diaz',    '555-0103', 'carla@tropicalimports.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Orchard Fresh',         'David Lee',     '555-0104', 'david@orchardfresh.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Berry Best Suppliers',  'Emma Wilson',   '555-0105', 'emma@berrybest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Market Street Growers', 'Frank Moore',   '555-0106', 'frank@marketstreet.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Coastal Fruit Traders', 'Grace Kim',     '555-0107', 'grace@coastalfruit.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Highland Harvest',      'Henry Brown',   '555-0108', 'henry@highlandharvest.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Valley View Vendors',   'Irene Clark',   '555-0109', 'irene@valleyview.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO vendors (vendor_name, contact_name, phone, email) VALUES ('Riverside Organics',    'Jack Turner',   '555-0110', 'jack@riverside.example');
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (1, 1, 1.25);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (2, 2, 0.55);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (7, 3, 2.10);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (9, 4, 1.75);
+**************************
+
+INSERT 0 1
+********* QUERY **********
+INSERT INTO fruits_by_vendor (fruit_id, vendor_id, price) VALUES (5, 5, 3.00);
+**************************
+
+INSERT 0 1

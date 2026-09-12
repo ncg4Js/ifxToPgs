@@ -1,0 +1,7 @@
+
+Executing at 16:11:13
+Could not insert: duplicate key value violates unique constraint "pk_fruits"
+{"sqlcode":-268,"sqlerrd":[0,-1,0,0,0,0],"sqlawarn":" "}
+Could not update rating to 13: stack depth limit exceeded 
+{"sqlcode":-6372,"sqlerrd":[0,-1,0,0,0,0],"sqlawarn":" "}
+                  13

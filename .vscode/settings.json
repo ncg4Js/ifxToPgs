@@ -1,6 +1,7 @@
 {
     "terminal.integrated.env.linux": {
-        "FGLLDPATH": "${FGLLDPATH}:${workspaceFolder}/src"
+        "FGLLDPATH": "${FGLLDPATH}:${workspaceFolder}/src",
+        "FGLPROFILE" : "${workspaceFolder}/resources/fglprofile_gres"
     },
     "terminal.integrated.env.osx": {
         "FGLLDPATH": "${FGLLDPATH}:${workspaceFolder}/src"

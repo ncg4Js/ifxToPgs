@@ -1,0 +1,125 @@
+SQL: DATABASE
+ | 4gl source      : main_last_rowid.4gl line=7
+ | loading driver  : [/opt/genero/fgl/dbdrivers/dbmpgs]
+ | db driver type  : pgs
+ | pgs.c:00649(3)  : Connection parameters for '?':
+ | pgs.c:00650(3)  :  Database      = 'fruits'
+ | pgs.c:00651(3)  :  Schema path   = ''
+ | pgs.c:00652(3)  :  Hostname      = 'postgres'
+ | pgs.c:00653(3)  :  Port          = '5432'
+ | pgs.c:00654(3)  :  Options       = ''
+ | pgs.c:00655(3)  :  User name     = 'pguser'
+ | pgs.c:00656(3)  :  Password      = '*'
+ | pgs.c:00657(3)  :  Trace file    = ''
+ | pgs.c:00663(3)  :  Prefetch rows = 'default'
+ | pgs.c:00666(3)  :  PGlibVersion  = 160011
+ | pgs.c:00717(1)  :  PQserverVersion() = 170009
+ | pgs.c:00719(1)  :  Numeric version   = 1700
+ | pgs.c:00260(2)  : Execdirect : set intervalstyle='iso_8601'
+ | ../ODI_common.h:00521(3)  : ODI_Connect: ifxemul = 1
+ | sqlcode         : 0
+ |   sqlerrd3      : 0
+ | curr driver     : ident='dbmpgs'
+ | curr connection : ident='_1' (dbspec=[fruits@postgres:5432])
+ | Timestamp       : 2026-09-12 16:11:22.80977
+ | Execution time  :         0 00:00:00.04432
+SQL: INSERT INTO fruits (entryid,fruit_name,variety,color,season) VALUES (1000,'Abrunho','Naosei','Red','Verao')
+ | 4gl source      : main_last_rowid.4gl line=16
+ | ../ODI_common.h:00817(3)  : adaptStatement: stmt type = 2
+ | ../ODI_common.h:00822(3)  : adaptStatement: ifxemul = 1
+ | pgs.c:01032(3)  : Find serial info: [select ns.nspname||'.'||substring(pg_get_expr(a.adbin,a.adrelid) from 'nextval.''([^'']*)') seqname , c.attname from pg_class p join pg_attrdef a   on (p.oid=a.adrelid) join pg_attribute c   on (p.oid=c.attrelid and a.adnum=c.attnum) join pg_namespace ns   on (p.relnamespace=ns.oid) where upper(p.relname)=upper('fruits') and pg_get_expr(a.adbin,a.adrelid) like 'nextval%' and (ns.nspname=current_schema()  or ns.oid=pg_my_temp_schema())]
+ | pgs.c:02022(3)  : Prefetch rows = 0
+ | pgs.c:01929(3)  : Nat stmt1 = insert into fruits (entryid,fruit_name,variety,color,season) VALUES (1000,'Abrunho','Naosei','Red','Verao') returning fruits.entryid, (select case when fruits.entryid>(select last_value from public.fruits_entryid_seq) then setval('public.fruits_entryid_seq',fruits.entryid,true) else 0 end)
+ | pgs.c:00479(3)  : Diagnostic info:
+ | pgs.c:00480(3)  :   SQL State: 23505
+ | pgs.c:00481(3)  :   Message  : duplicate key value violates unique constraint "pk_fruits"
+ | pgs.c:02088(2)  : Could not execute the statement.
+ | sqlcode         : -268
+ |   sqlstate      : 23505
+ |   sqlerrd2      : -1
+ |   sqlerrd3      : 0
+ |   sql message   : duplicate key value violates unique constraint "pk_fruits"
+ |   sql msg param : 
+ | curr driver     : ident='dbmpgs'
+ | curr connection : ident='_1' (dbspec=[fruits@postgres:5432])
+ | Timestamp       : 2026-09-12 16:11:22.85497
+ | Execution time  :         0 00:00:00.02071
+SQL: UPDATE fruits SET rating = ? WHERE entryid = 1000
+ | 4gl source      : main_last_rowid.4gl line=26
+ | ../ODI_common.h:00817(3)  : adaptStatement: stmt type = 3
+ | ../ODI_common.h:00822(3)  : adaptStatement: ifxemul = 1
+ | pgs.c:02022(3)  : Prefetch rows = 0
+ | pgs.c:01929(3)  : Nat stmt1 = update fruits SET rating = $1 WHERE entryid = 1000
+ | pgs.c:00479(3)  : Diagnostic info:
+ | pgs.c:00480(3)  :   SQL State: 54001
+ | pgs.c:00481(3)  :   Message  : stack depth limit exceeded
+ | pgs.c:02088(2)  : Could not execute the statement.
+ | sqlcode         : -6372
+ |   sqlstate      : 54001
+ |   sqlerrd2      : -1
+ |   sqlerrd3      : 0
+ |   sql message   : stack depth limit exceeded
+ |   sql msg param : 
+ | curr driver     : ident='dbmpgs'
+ | curr connection : ident='_1' (dbspec=[fruits@postgres:5432])
+ | using: 1
+ |  t:                      SMALLINT f:01 v:"7"
+ | Timestamp       : 2026-09-12 16:11:22.87664
+ | Execution time  :         0 00:00:00.11863
+SQL: PREPARE
+ | 4gl source      : compatPostGres/last_rowid.4gl line=34
+ | ../ODI_common.h:00817(3)  : adaptStatement: stmt type = 1
+ | ../ODI_common.h:00822(3)  : adaptStatement: ifxemul = 1
+ | pgs.c:02022(3)  : Prefetch rows = 50
+ | sqlcode         : 0
+ |   sqlerrd3      : 0
+ | curr driver     : ident='dbmpgs'
+ | curr connection : ident='_1' (dbspec=[fruits@postgres:5432])
+ | sql cursor      : ident='cu0' (fglname='?',module='?')
+ |   fgl stmt      : SELECT currval(pg_get_serial_sequence('fruits', 'rowid'))
+ |   sql stmt      : SELECT currval(pg_get_serial_sequence('fruits', 'rowid'))
+ | Timestamp       : 2026-09-12 16:11:23.00019
+ | Execution time  :         0 00:00:00.01091
+SQL: DECLARE PREPARED
+ | 4gl source      : compatPostGres/last_rowid.4gl line=38
+ | pgs.c:02022(3)  : Prefetch rows = 50
+ | sqlcode         : 0
+ |   sqlerrd3      : 0
+ | curr driver     : ident='dbmpgs'
+ | curr connection : ident='_1' (dbspec=[fruits@postgres:5432])
+ | sql cursor      : ident='cu0' (fglname='?',module='?')
+ |   fgl stmt      : SELECT currval(pg_get_serial_sequence('fruits', 'rowid'))
+ |   sql stmt      : SELECT currval(pg_get_serial_sequence('fruits', 'rowid'))
+ |   scroll cursor : 0
+ |   with hold     : 0
+ | Timestamp       : 2026-09-12 16:11:23.01222
+ | Execution time  :         0 00:00:00.00942
+SQL: OPEN
+ | 4gl source      : compatPostGres/last_rowid.4gl line=38
+ | pgs.c:01857(3)  : Nat stmt1 = declare cu0 cursor with hold for select currval(pg_get_serial_sequence('fruits', 'rowid'))
+ | sqlcode         : 0
+ |   sqlerrd3      : 0
+ | curr driver     : ident='dbmpgs'
+ | curr connection : ident='_1' (dbspec=[fruits@postgres:5432])
+ | sql cursor      : ident='cu0' (fglname='?',module='?')
+ |   fgl stmt      : SELECT currval(pg_get_serial_sequence('fruits', 'rowid'))
+ |   sql stmt      : SELECT currval(pg_get_serial_sequence('fruits', 'rowid'))
+ | Timestamp       : 2026-09-12 16:11:23.02268
+ | Execution time  :         0 00:00:00.00864
+SQL: FETCH NEXT
+ | 4gl source      : compatPostGres/last_rowid.4gl line=39
+ | sqlcode         : 0
+ |   sqlerrd3      : 0
+ | curr driver     : ident='dbmpgs'
+ | curr connection : ident='_1' (dbspec=[fruits@postgres:5432])
+ | sql cursor      : ident='cu0' (fglname='?',module='?')
+ |   fgl stmt      : SELECT currval(pg_get_serial_sequence('fruits', 'rowid'))
+ |   sql stmt      : SELECT currval(pg_get_serial_sequence('fruits', 'rowid'))
+ | into(tmp): 1
+ |  t:                        BIGINT f:04 v:"14"
+ | Timestamp       : 2026-09-12 16:11:23.03254
+ | Execution time  :         0 00:00:00.00878
+ | ../ODI_common.h:00455(3)  : ODI_Stop() called, canUseDBLib = 1
+ | pgs.c:01814(2)  : Nat: close cu0
+ | pgs.c:00260(2)  : Execdirect : deallocate cu0
+ | ../ODI_common.h:00427(2)  : myExitCleanup() called, making driver unusable.

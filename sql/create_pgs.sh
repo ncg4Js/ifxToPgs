@@ -3,10 +3,10 @@
 psql \
   -h postgres \
   -p 5432 \
-  -d postgres \
+  -d fruits \
   -U pguser \
   -W \
-  -f northwind.postgre.sql \
+  -f sql/generate_db_pgs.sql \
   -v ON_ERROR_STOP=1 \
   -1 \
   -L ./psql_run.log
